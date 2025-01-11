@@ -1,25 +1,28 @@
 param location string = resourceGroup().location
 
+@export()
+type subnet = {
+  name: string
+  addressPrefix: string
+}
+
 param virtualNetworkName string
-param subnetName string
+param addressPrefixes string[]
+param subnets subnet[]
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' = {
   name: virtualNetworkName
   location: location
   properties: {
     addressSpace: {
-      addressPrefixes: [
-        '192.168.0.0/16'
-      ]
+      addressPrefixes: addressPrefixes
     }
-    subnets: [
-      {
-        name: subnetName
-        properties: {
-          addressPrefix: '192.168.128.0/23'
-        }
+    subnets: [for subnet in subnets: {
+      name: subnet.name
+      properties: {
+        addressPrefix: subnet.addressPrefix
       }
-    ]
+    }]
     virtualNetworkPeerings: []
   }
 }

@@ -1,27 +1,61 @@
 var virtualNetworkName = 'vnet-labo'
-var subnetName = 'snet-labo-containerapps'
+var frontDoorSubnetName = 'snet-labo-frontdoor'
+var containerAppsSubnetName = 'snet-labo-containerapps'
 var caeName = 'cae-labo'
 var privateDnsZoneName = 'privatelink.japaneast.azurecontainerapps.io-config'
+var frontDoorProfileName = 'afd-labo'
+var frontDoorSkuName = 'Standard_AzureFrontDoor'
+
+var logAnalyticsWorkspaceName = 'log-core-uat'
+var logAnalyticsSku = 'PerGB2018'
+var applicationInsightsName = 'appinsights-core-uat'
+
+var addressPrefixes = [
+  '192.168.0.0/16'
+]
+var subnets = [
+  {
+    name: frontDoorSubnetName
+    addressPrefix: '192.168.0.0/23'
+  }
+  {
+    name: containerAppsSubnetName
+    addressPrefix: '192.168.2.0/23'
+  }
+]
+
+module log './modules/log.bicep' = {
+  name: 'provision-log'
+  params: {
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    logAnalyticsSku: logAnalyticsSku
+    applicationInsightsName: applicationInsightsName
+  }
+}
 
 module network 'network.bicep' = {
   name: 'provision-network'
   params: {
     virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
+    addressPrefixes: addressPrefixes
+    subnets: subnets
   }
 }
 
-module cae 'cae.bicep' = {
+module cae './modules/cae.bicep' = {
   name: 'provision-cae'
   params: {
     caeName: caeName
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    applicationInsightsName: applicationInsightsName
   }
   dependsOn: [
     network
+    log
   ]
 }
 
-module pdns 'pdns.bicep' = {
+module pdns './modules/pdns.bicep' = {
   name: 'provision-pdns'
   params: {
     privateDnsZoneName: privateDnsZoneName
@@ -31,20 +65,20 @@ module pdns 'pdns.bicep' = {
     cae
   ]
 }
-module pep 'pep.bicep' = {
+module pep './modules/pep.bicep' = {
   name: 'provision-pep'
   params: {
     caeName: caeName
     virtualNetworkName: virtualNetworkName
     privateDnsZoneName: privateDnsZoneName
-    subnetName: subnetName
+    subnetName: containerAppsSubnetName
   }
   dependsOn: [
     pdns
   ]
 }
 
-module ca 'ca.bicep' = {
+module ca './modules/ca.bicep' = {
   name: 'provision-ca'
   params: {
     caeName: caeName
@@ -52,5 +86,18 @@ module ca 'ca.bicep' = {
   }
   dependsOn: [
     pdns
+  ]
+}
+
+module afd 'afd.bicep' = {
+  name: 'provision-afd'
+  params: {
+    frontDoorProfileName: frontDoorProfileName
+    frontDoorSkuName: frontDoorSkuName
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+  }
+  dependsOn: [
+    network
+    log
   ]
 }
