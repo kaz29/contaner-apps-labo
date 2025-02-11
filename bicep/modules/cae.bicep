@@ -42,3 +42,5 @@ resource environment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
     publicNetworkAccess: 'Disabled'
   }
 }
+
+output managedEnvironmentsId string = environment.id
