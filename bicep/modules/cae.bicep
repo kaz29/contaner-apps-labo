@@ -12,7 +12,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   name: applicationInsightsName
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
+resource environment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: caeName
   location: location
   properties: {

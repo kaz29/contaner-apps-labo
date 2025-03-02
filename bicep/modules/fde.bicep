@@ -61,7 +61,7 @@ resource originGroupResource 'Microsoft.Cdn/profiles/originGroups@2024-09-01' = 
 }
 
 
-resource originResource 'Microsoft.Cdn/profiles/originGroups/origins@2024-09-01' = [for origin in origins: {
+resource originResources 'Microsoft.Cdn/profiles/originGroups/origins@2024-09-01' = [for (origin, index) in origins: {
   parent: originGroupResource
   name: origin.name
   properties: {
@@ -73,13 +73,14 @@ resource originResource 'Microsoft.Cdn/profiles/originGroups/origins@2024-09-01'
     sharedPrivateLinkResource: origin.sharedPrivateLinkResource
     enforceCertificateNameCheck: true
   }
+  dependsOn: index == 0 ? [] : [origins[index - 1]]
 }]
 
 resource routeResource 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-09-01' = {
   parent: endpoint
   name: routeName
   dependsOn: [
-    originResource
+    originResources
   ]
   properties: {
     originGroup: {

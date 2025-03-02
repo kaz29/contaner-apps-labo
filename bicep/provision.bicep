@@ -1,10 +1,10 @@
-var caeName = 'cae-labo'
-var frontDoorProfileName = 'afd-labo'
+var caeName = 'cae-kaz29-labo'
+var frontDoorProfileName = 'afd-kaz29-labo'
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
 
-var logAnalyticsWorkspaceName = 'log-core-uat'
+var logAnalyticsWorkspaceName = 'log-kaz29-labo'
 var logAnalyticsSku = 'PerGB2018'
-var applicationInsightsName = 'appinsights-core-uat'
+var applicationInsightsName = 'appinsights-kaz29-labo'
 
 module log './modules/log.bicep' = {
   name: 'provision-log'
@@ -43,10 +43,8 @@ module afd './modules/afd.bicep' = {
   params: {
     frontDoorProfileName: frontDoorProfileName
     frontDoorSkuName: frontDoorSkuName
-    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
   }
   dependsOn: [
-    log
     ca
   ]
 }
