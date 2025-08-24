@@ -27,3 +27,7 @@ Temporary Items
 # Visual Studio Code
 .vscode/
 .history/
+
+MEMO.md
+.envrc
+vendor
