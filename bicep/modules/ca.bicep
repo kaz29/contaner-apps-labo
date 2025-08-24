@@ -14,7 +14,7 @@ resource environment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: caeName
 }
 
-resource containerApp 'Microsoft.App/containerApps@2023-04-01-preview' = {
+resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
   name: containerAppName
   location: location
   identity: {

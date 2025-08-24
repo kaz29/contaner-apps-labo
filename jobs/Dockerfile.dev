@@ -1,0 +1,21 @@
+FROM php:8.3.24-cli
+
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		ca-certificates \
+		curl \
+		xz-utils \
+		git \
+		unzip \
+		libzip-dev \
+	; \
+	rm -rf /var/lib/apt/lists/* \
+    # install composer
+    && { \
+      curl -sS https://getcomposer.org/installer; \
+    } | php \
+    && mv composer.phar /usr/local/bin/composer
+
+WORKDIR /srv/app
+CMD ["tail", "-f", "/dev/null"]

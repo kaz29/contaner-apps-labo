@@ -1,0 +1,11 @@
+services:
+  queue-job-example-app:
+    container_name: queue-job-example-app
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./app:/srv/app
+    environment:
+      QUEUE_CONNECTION_STRING: ${QUEUE_CONNECTION_STRING}
+      QUEUE_NAME: queue-job-example

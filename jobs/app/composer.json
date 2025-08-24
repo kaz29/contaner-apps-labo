@@ -1,0 +1,7 @@
+{
+    "name": "kaz29/queue-example-app",
+    "type": "project",
+    "require": {
+        "microsoft/azure-storage-queue": "^1.3"
+    }
+}
